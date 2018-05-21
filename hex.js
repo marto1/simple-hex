@@ -22,16 +22,6 @@ function hexagon(ctx, x, y, size, fill){
     ctx.fill();
 }
 
-function rect(ctx, coord){
-    ctx.fillStyle = "#f00";
-    ctx.beginPath();
-    ctx.moveTo(coord[0], coord[3]); 		          
-    ctx.lineTo(coord[2], coord[3]);
-    ctx.lineTo(coord[2], coord[1]);
-    ctx.lineTo(coord[0], coord[1]);
-    ctx.closePath();
-    ctx.stroke();
-}
 
 function inside(point, vs) {
     // ray-casting algorithm based on
@@ -62,6 +52,16 @@ function dot_within(x, y, board) {
     console.log(inside([x, y], bcoords));
 }
 
+function paragram(ctx, coord){
+    ctx.fillStyle = "#f00";
+    ctx.beginPath();
+    ctx.moveTo(coord[0], coord[1]); 		          
+    ctx.lineTo(coord[2], coord[3]);
+    ctx.lineTo(coord[4], coord[5]);
+    ctx.lineTo(coord[6], coord[7]);
+    ctx.closePath();
+    ctx.stroke();
+}
 
 function hexagon_field(ctx, fill, w, h, mask){
     for (var k = 0; k < 11; k++){
@@ -69,12 +69,16 @@ function hexagon_field(ctx, fill, w, h, mask){
 	    hexagon(ctx, 10+k*25, 150+18*i-k*10, 10, fill);
 	}
     }
-    var bounding = [(10-0.6*10), // x1 - lower left
-		    (150+18*10+1.6*10), // y1 - lower left
-		    (11*25),	// x2 - upper right
-		    (150-10*10)];  // y2 - upper right
+    var bounding = [10-0.6*10, // x1 - upper left
+		    150, // y1 - upper left
+		    11*25,	// x2 - upper right
+		    150-11*10, // y2 - upper right
+		    11*25, // x3 - lower right
+		    150-10*10+18*11+5,
+		    10-0.6*10,
+		    150+18*11+5];  
     console.log("bounding rect: " + bounding);
-    rect(ctx, bounding); 	// board hit box
+    paragram(ctx, bounding); 	// board hit box
     return bounding;    
 }
 
