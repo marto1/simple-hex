@@ -45,10 +45,10 @@ function inside(point, vs) {
 
 function dot_within(x, y, board) {
     console.log(board)
-    var bcoords = [[board[0], board[3]],
+    var bcoords = [[board[0], board[1]],
 		   [board[2], board[3]],
-		   [board[2], board[1]],
-		   [board[0], board[1]]];
+		   [board[4], board[5]],
+		   [board[6], board[7]]];
     console.log(inside([x, y], bcoords));
 }
 
