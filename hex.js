@@ -1,12 +1,35 @@
 main();
 
+function winning(mask) {
+    paths = []
+    for (var i = 0; i < 11; i++){
+	if (mask[i] == 2) {
+	    paths.push(i)
+	}
+    }
+    
+}
+
+var ALTERNATE = false;
 
 function handleMouseDown(e, offsetX, offsetY, ctx, bounding){
     // get the mouse position
     var mouseX=parseInt(e.clientX-offsetX);
     var mouseY=parseInt(e.clientY-offsetY);
+    var mask = bounding[2];
     console.log("x:" + mouseX + ";y:" + mouseY);
-    console.log(dot_within(mouseX, mouseY, bounding));
+    var within = dot_within(mouseX, mouseY, bounding);
+    if (within != -1){
+	if (ALTERNATE) {
+	    hexagon2(ctx, within[1], "#f00");
+	    mask[within[0]] = 1;
+	} else {
+	    hexagon2(ctx, within[1], "#00f");
+	    mask[within[0]] = 2;
+	}
+	ALTERNATE = !ALTERNATE;
+    }
+    winning(mask);
 }
 
 function hexagon(ctx, x, y, size, fill){
@@ -24,6 +47,20 @@ function hexagon(ctx, x, y, size, fill){
     ctx.closePath();
     ctx.fill();
     return coord
+}
+
+function hexagon2(ctx, coord, fill) {
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    ctx.moveTo(coord[0][0], coord[0][1]);
+    ctx.lineTo(coord[1][0], coord[1][1]);
+    ctx.lineTo(coord[2][0], coord[2][1]);
+    ctx.lineTo(coord[3][0], coord[3][1]);
+    ctx.lineTo(coord[4][0], coord[4][1]);
+    ctx.lineTo(coord[5][0], coord[5][1]);
+    ctx.closePath();
+    ctx.fill();
+    return coord    
 }
 
 
@@ -59,7 +96,7 @@ function dot_within(x, y, b) {
     }
     for (var i = 0; i < hexagons.length; i++){
 	if (inside([x,y], hexagons[i])){
-	    return i;
+	    return [i, hexagons[i]];
 	}
     }
     return -1;
@@ -94,7 +131,7 @@ function hexagon_field(ctx, fill, w, h){
 		    10-0.6*10,
 		    150+18*11+5];  
     console.log("bounding rect: " + bounding);
-    paragram(ctx, bounding); 	// board hit box
+    // paragram(ctx, bounding); 	// board hit box
     return [bounding, hexagon_coords];
 }
 
@@ -120,6 +157,7 @@ function main() {
     var scrollX=canvas.scrollLeft;
     var scrollY=canvas.scrollTop;
     var b = hexagon_field(ctx, "#000", 640, 480);
+    b.push(occupied);
     document.getElementById('glCanvas').onmousedown = function(e){
 	handleMouseDown(e, offsetX, offsetY, ctx, b);
     };
