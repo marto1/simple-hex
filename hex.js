@@ -1,13 +1,29 @@
 main();
 
-function winning(mask) {
-    paths = []
-    for (var i = 0; i < 11; i++){
-	if (mask[i] == 2) {
-	    paths.push(i)
-	}
+function neighbor(mask, index) {
+    // up down rup rdown lup ldown
+    var k = Math.floor(index/10); // column
+    var neighbors = [
+	index-1, index+1, 
+	(k+1)*11 + index, (k+1)*11 + index+1,
+	(k-1)*11 + index, (k-1)*11 + index+1
+    ];
+    var results = [0,0,0,0,0,0];
+    if ((index-1) >= 0) {
+	results[0] = mask[index-1];
     }
-    
+    if ((index+1) < 11) {
+	results[1] = mask[index+1];
+    }
+    console.log(neighbors);
+}
+
+function winning(mask, move, index) {
+    // start exploring paths from index until you find
+    // valid winning path
+    var visited = {};
+    console.log(index);
+    console.log(neighbor(mask, index));
 }
 
 var ALTERNATE = false;
@@ -27,9 +43,10 @@ function handleMouseDown(e, offsetX, offsetY, ctx, bounding){
 	    hexagon2(ctx, within[1], "#00f");
 	    mask[within[0]] = 2;
 	}
+	winning(mask, ALTERNATE, within[0]);	
 	ALTERNATE = !ALTERNATE;
     }
-    winning(mask);
+    
 }
 
 function hexagon(ctx, x, y, size, fill){
