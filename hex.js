@@ -11,8 +11,8 @@ function neighbor(mask, index) {
     var k = Math.floor(index/11); // column
     var neighbors = [
 	index-1, index+1, 
-	(k+1)*11 + index, (k+1)*11 + index+1,
-	(k-1)*11 + index, (k-1)*11 + index+1
+	11+index, 12+index,
+	index-12, index-11
     ];
     var results = [0,0,0,0,0,0];
     function if_nab_true(expr, index) {
@@ -23,10 +23,10 @@ function neighbor(mask, index) {
     console.log(k*11-1);
     if_nab_true(neighbors[0] > k*11-1, 0);
     if_nab_true(neighbors[1] < (k+1)*11, 1);
-    // if_nab_true(neighbors[2] < 11, 2);
-    // if_nab_true(neighbors[3] < 11, 3);
-    // if_nab_true(neighbors[4] < 11, 4);
-    // if_nab_true(neighbors[5] < 11, 5);
+    if_nab_true(neighbors[2] < 121, 2);
+    if_nab_true(neighbors[3] < 121, 3);
+    if_nab_true(neighbors[4] > 0, 4);
+    if_nab_true(neighbors[5] > 0, 5);
     console.log(neighbors);
     console.log(results);
 }
