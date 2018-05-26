@@ -2,7 +2,7 @@ main();
 
 function set_if_true(expr, arr, key, value) {
     if (expr){
-	arr[key] = value
+	arr[key][1] = value;
     }
 }
 
@@ -10,33 +10,69 @@ function neighbor(mask, index) {
     // up down rup rdown lup ldown
     var k = Math.floor(index/11); // column
     var neighbors = [
-	index-1, index+1, 
-	11+index, 12+index,
-	index-12, index-11
+	index-1, 
+	index+1, 
+	11+index, 
+	12+index,
+	index-12,
+	index-11
     ];
-    var results = [0,0,0,0,0,0];
+    var results = [
+	[neighbors[0], 0],
+	[neighbors[1], 0],
+	[neighbors[2], 0],
+	[neighbors[3], 0],
+	[neighbors[4], 0],
+	[neighbors[5], 0]];
     function if_nab_true(expr, index) {
-	set_if_true(expr, results, index, mask[neighbors[index]]);
+	set_if_true(expr, 
+		    results, 
+		    index,
+		    mask[neighbors[index]]);
     }
-    console.log("=========");
-    console.log(k);
-    console.log(k*11-1);
     if_nab_true(neighbors[0] > k*11-1, 0);
     if_nab_true(neighbors[1] < (k+1)*11, 1);
     if_nab_true(neighbors[2] < 121, 2);
     if_nab_true(neighbors[3] < 121, 3);
     if_nab_true(neighbors[4] > 0, 4);
     if_nab_true(neighbors[5] > 0, 5);
-    console.log(neighbors);
-    console.log(results);
+    return results;
 }
 
 function winning(mask, move, index) {
     // start exploring paths from index until you find
     // valid winning path
-    var visited = {};
-    console.log(index);
-    console.log(neighbor(mask, index));
+    var visited = {index:null};
+    var limits = [[0,110],[10,120]];
+    var checking = true;
+    var winner = 0; //touching start(1 point) and end(1 point)
+    var available = neighbor(mask, index);
+    // console.log(available);
+    while (available.length){
+    	var check = available.pop();
+	// TODO check red/blue
+    	if (check[1] == 0){ //skip inactive
+    	    continue;
+    	}
+	var ne = neighbor(mask, check[0]);
+	// ignore visited
+	for (var i = 0; i < 6; i++){
+	    if (ne[i][0] in visited){
+		console.log(visited);
+		continue;
+	    }
+	    available.push(ne[i]);
+	}
+	visited[check[0]] = null;
+    	// if (check limits[]
+    	if (winner == 2){
+    	    break;
+    	}
+    }
+    if (winner == 2){
+	alert("GAME OVER!");
+    }
+    
 }
 
 var ALTERNATE = false;
