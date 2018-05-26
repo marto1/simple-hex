@@ -1,21 +1,34 @@
 main();
 
+function set_if_true(expr, arr, key, value) {
+    if (expr){
+	arr[key] = value
+    }
+}
+
 function neighbor(mask, index) {
     // up down rup rdown lup ldown
-    var k = Math.floor(index/10); // column
+    var k = Math.floor(index/11); // column
     var neighbors = [
 	index-1, index+1, 
 	(k+1)*11 + index, (k+1)*11 + index+1,
 	(k-1)*11 + index, (k-1)*11 + index+1
     ];
     var results = [0,0,0,0,0,0];
-    if ((index-1) >= 0) {
-	results[0] = mask[index-1];
+    function if_nab_true(expr, index) {
+	set_if_true(expr, results, index, mask[neighbors[index]]);
     }
-    if ((index+1) < 11) {
-	results[1] = mask[index+1];
-    }
+    console.log("=========");
+    console.log(k);
+    console.log(k*11-1);
+    if_nab_true(neighbors[0] > k*11-1, 0);
+    if_nab_true(neighbors[1] < (k+1)*11, 1);
+    // if_nab_true(neighbors[2] < 11, 2);
+    // if_nab_true(neighbors[3] < 11, 3);
+    // if_nab_true(neighbors[4] < 11, 4);
+    // if_nab_true(neighbors[5] < 11, 5);
     console.log(neighbors);
+    console.log(results);
 }
 
 function winning(mask, move, index) {
