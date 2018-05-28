@@ -1,5 +1,30 @@
 main();
 
+var contains = function(needle) {
+    // Per spec, the way to identify
+    // NaN is that it is not equal to itself
+    var findNaN = needle !== needle;
+    var indexOf;
+    if(!findNaN && typeof Array.prototype.indexOf === 'function') {
+        indexOf = Array.prototype.indexOf;
+    } else {
+        indexOf = function(needle) {
+            var i = -1, index = -1;
+
+            for(i = 0; i < this.length; i++) {
+                var item = this[i];
+
+                if((findNaN && item !== item) || item === needle) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        };
+    }
+    return indexOf.call(this, needle) > -1;
+};
+
 function set_if_true(expr, arr, key, value) {
     if (expr){
 	arr[key][1] = value;
@@ -39,37 +64,67 @@ function neighbor(mask, index) {
     return results;
 }
 
+function is_winning(index, limits) {
+    if (contains.call(limits, index)) {
+	console.log(index);
+	return 1;
+    }
+    return 0;
+}
+
 function winning(mask, move, index) {
     // start exploring paths from index until you find
     // valid winning path
-    var visited = {index:null};
-    var limits = [[0,110],[10,120]];
+    var visited = {};
+    visited[index] = null;
+    var limits1 = [0, 11, 22, 33, 44, 55, 66, 77, 88, 99, 110];
+    var limits2 = [10, 21, 32, 43, 54, 65, 76, 87, 98, 109, 120];
     var checking = true;
-    var winner = 0; //touching start(1 point) and end(1 point)
-    var available = neighbor(mask, index);
-    // console.log(available);
-    while (available.length){
-    	var check = available.pop();
-	// TODO check red/blue
-    	if (check[1] == 0){ //skip inactive
-    	    continue;
-    	}
-	var ne = neighbor(mask, check[0]);
-	// ignore visited
-	for (var i = 0; i < 6; i++){
-	    if (ne[i][0] in visited){
-		console.log(visited);
-		continue;
-	    }
-	    available.push(ne[i]);
+    var winner = 0; //touching start(1 point) and end(1 point),
+                    //connect(3)
+    // winning check goes in 2 steps:
+    // check limits
+    // check if path exists from clicked to limits(if any)
+    console.log(index);
+
+    var l1 = [];
+    var l2 = [];    
+    for (var i = 0; i < limits1.length; i++) {
+	if (mask[limits1[i]] != 0){
+	    l1.push([i, mask[limits1[i]]]);
+	    visited[i] = null;
 	}
-	visited[check[0]] = null;
-    	// if (check limits[]
-    	if (winner == 2){
-    	    break;
-    	}
+	if (mask[limits2[i]] != 0){
+	    l2.push([i, mask[limits2[i]]]);
+	    visited[i] = null;
+	}	
+    }    
+    if ((l1.length == 0) || (l2.length == 0)){
+	console.log("empty");
+	return 0;
     }
-    if (winner == 2){
+    var available = neighbor(mask, index);
+    // while (available.length){
+    // 	var check = available.pop();
+    // 	// TODO check red/blue
+    // 	if (check[1] == 0){ //skip inactive
+    // 	    continue;
+    // 	}
+    // 	var ne = neighbor(mask, check[0]);
+    // 	for (var i = 0; i < 6; i++){
+    // 	    if (ne[i][0] in visited){
+    // 		// console.log("visited:" + ne[i][0]); // ignore visited
+    // 		continue;
+    // 	    }
+    // 	    available.push(ne[i]);
+    // 	}
+    // 	visited[check[0]] = null;
+    // 	winner += is_winning(check[0], limits);
+    // 	if (winner >= 2){
+    // 	    break;
+    // 	}
+    // }
+    if (winner == 3){
 	alert("GAME OVER!");
     }
     
