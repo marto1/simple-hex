@@ -83,10 +83,6 @@ function winning(mask, move, index) {
     var limits1 = [0, 11, 22, 33, 44, 55, 66, 77, 88, 99, 110];
     var limits2 = [10, 21, 32, 43, 54, 65, 76, 87, 98, 109, 120];
     var checking = true;
-    var winner = 0; //connect(1)
-    // winning check goes in 2 steps:
-    // check limits
-    // check if path exists from clicked to limits(if any)
     console.log(index);    
     var a = neighbor(mask, index);
     var available = [];
@@ -95,7 +91,6 @@ function winning(mask, move, index) {
 	    available.push(a[i]);
 	}
     }
-    console.log(paths);
     if (available.length == 0){
 	paths.push([index]) //no neighbors, new path
 	return;
@@ -111,8 +106,6 @@ function winning(mask, move, index) {
     	}
     }
     insets = Object.keys(insets);
-    console.log("==========");
-    console.log(insets);
     if (insets.length == 1){
 	paths[insets[0]].push(index); // add to path
     } else {
@@ -120,15 +113,30 @@ function winning(mask, move, index) {
 	var newpath = [index];
 	for (var i = 0; i < insets.length; i++){
 	    Array.prototype.push.apply(newpath, paths[insets[i]]);
-	}
-	for (var i = 0; i < insets.length; i++){
 	    delete paths[insets[i]];
 	}
+	paths = paths.filter(function(val){return val});
 	paths.push(newpath);
     }
-
-    // TODO win check on all paths
-
+    console.log(paths);
+    // win check on all paths
+    // FIXME check only new path
+    for (var i = 0; i < paths.length; i++) { // each path
+	var l1 = false; // we need a single path to contain all
+	var l2 = false; // so reset for each path
+	console.log(paths[i]);
+    	for (var k = 0; k < paths[i].length; k++) { //each node in path
+	    if (is_winning(paths[i][k], limits1)) {
+		l1 = true;
+	    }
+	    if (is_winning(paths[i][k], limits2)) {
+		l2 = true;
+	    }
+	}
+	if (l1 && l2) {
+	    alert("WINNER!");
+	}
+    }
 }
 
 var ALTERNATE = false;
