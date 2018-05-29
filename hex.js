@@ -66,7 +66,6 @@ function neighbor(mask, index) {
 
 function is_winning(index, limits) {
     if (contains.call(limits, index)) {
-	console.log(index);
 	return 1;
     }
     return 0;
@@ -89,8 +88,8 @@ function winning(mask, move, index) {
 	var color = 2;	
     }
     console.log(index);
-    console.log(player);
-    console.log(paths);
+    // console.log(player);
+    // console.log(paths);
     var a = neighbor(mask, index);
     var available = [];
     for (var i = 0; i < a.length; i++) {
@@ -139,7 +138,7 @@ function winning(mask, move, index) {
 	    }
 	}
 	if (l1 && l2) {
-	    alert("WINNER!");
+	    alert("Winner is player " + color + "!");
 	}
     }
 }
@@ -253,18 +252,18 @@ function hexagon_field(ctx, fill, w, h){
     hexagon_coords = [];
     for (var k = 0; k < 11; k++){
 	for (var i = 0; i < 11; i++){
-	    coord = hexagon(ctx, 10+k*25, 150+18*i-k*10, 10, fill);
+	    coord = hexagon(ctx, 10+k*25, 110+18*i-k*10, 10, fill);
 	    hexagon_coords.push(coord);
 	}
     }
     var bounding = [10-0.6*10, // x1 - upper left
-		    150, // y1 - upper left
+		    110, // y1 - upper left
 		    11*25,	// x2 - upper right
-		    150-11*10, // y2 - upper right
+		    110-11*10, // y2 - upper right
 		    11*25, // x3 - lower right
-		    150-10*10+18*11+5,
+		    110-10*10+18*11+5,
 		    10-0.6*10,
-		    150+18*11+5];  
+		    110+18*11+5];  
     console.log("bounding rect: " + bounding);
     // paragram(ctx, bounding); 	// board hit box
     return [bounding, hexagon_coords];
@@ -291,7 +290,7 @@ function main() {
     var offsetY=canvasOffset.top;
     var scrollX=canvas.scrollLeft;
     var scrollY=canvas.scrollTop;
-    var b = hexagon_field(ctx, "#000", 640, 480);
+    var b = hexagon_field(ctx, "#000", 300, 400);
     b.push(occupied);
     document.getElementById('glCanvas').onmousedown = function(e){
 	handleMouseDown(e, offsetX, offsetY, ctx, b);
