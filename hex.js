@@ -72,6 +72,9 @@ function is_winning(index, limits) {
     return 0;
 }
 
+// [2,3,4,5], [17,18,19], [13]
+var paths = [];
+
 function winning(mask, move, index) {
     // start exploring paths from index until you find
     // valid winning path
@@ -80,54 +83,52 @@ function winning(mask, move, index) {
     var limits1 = [0, 11, 22, 33, 44, 55, 66, 77, 88, 99, 110];
     var limits2 = [10, 21, 32, 43, 54, 65, 76, 87, 98, 109, 120];
     var checking = true;
-    var winner = 0; //touching start(1 point) and end(1 point),
-                    //connect(3)
+    var winner = 0; //connect(1)
     // winning check goes in 2 steps:
     // check limits
     // check if path exists from clicked to limits(if any)
-    console.log(index);
-
-    var l1 = [];
-    var l2 = [];    
-    for (var i = 0; i < limits1.length; i++) {
-	if (mask[limits1[i]] != 0){
-	    l1.push([i, mask[limits1[i]]]);
-	    visited[i] = null;
+    console.log(index);    
+    var a = neighbor(mask, index);
+    var available = [];
+    for (var i = 0; i < a.length; i++) {
+	if (a[i][1] != 0){ // OR ones not of your color
+	    available.push(a[i]);
 	}
-	if (mask[limits2[i]] != 0){
-	    l2.push([i, mask[limits2[i]]]);
-	    visited[i] = null;
-	}	
-    }    
-    if ((l1.length == 0) || (l2.length == 0)){
-	console.log("empty");
-	return 0;
     }
-    var available = neighbor(mask, index);
-    // while (available.length){
-    // 	var check = available.pop();
-    // 	// TODO check red/blue
-    // 	if (check[1] == 0){ //skip inactive
-    // 	    continue;
-    // 	}
-    // 	var ne = neighbor(mask, check[0]);
-    // 	for (var i = 0; i < 6; i++){
-    // 	    if (ne[i][0] in visited){
-    // 		// console.log("visited:" + ne[i][0]); // ignore visited
-    // 		continue;
-    // 	    }
-    // 	    available.push(ne[i]);
-    // 	}
-    // 	visited[check[0]] = null;
-    // 	winner += is_winning(check[0], limits);
-    // 	if (winner >= 2){
-    // 	    break;
-    // 	}
-    // }
-    if (winner == 3){
-	alert("GAME OVER!");
+    console.log(paths);
+    if (available.length == 0){
+	paths.push([index]) //no neighbors, new path
+	return;
     }
-    
+    var insets = {};
+    for (var i = 0; i < paths.length; i++) { // each path
+    	for (var k = 0; k < paths[i].length; k++) { //each node in path
+	    for (var j = 0; j < available.length; j++) { //neighbor
+		if (available[j][0] == paths[i][k]){
+		    insets[i] = null; //save path indexes *uniquely*
+		}
+	    }
+    	}
+    }
+    insets = Object.keys(insets);
+    console.log("==========");
+    console.log(insets);
+    if (insets.length == 1){
+	paths[insets[0]].push(index); // add to path
+    } else {
+	// merge paths and push index node
+	var newpath = [index];
+	for (var i = 0; i < insets.length; i++){
+	    Array.prototype.push.apply(newpath, paths[insets[i]]);
+	}
+	for (var i = 0; i < insets.length; i++){
+	    delete paths[insets[i]];
+	}
+	paths.push(newpath);
+    }
+
+    // TODO win check on all paths
+
 }
 
 var ALTERNATE = false;
