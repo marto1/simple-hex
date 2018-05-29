@@ -73,33 +73,40 @@ function is_winning(index, limits) {
 }
 
 // [2,3,4,5], [17,18,19], [13]
-var paths = [];
+var paths = {"player1":[], "player2":[]};
 
 function winning(mask, move, index) {
-    // start exploring paths from index until you find
-    // valid winning path
-    var visited = {};
-    visited[index] = null;
-    var limits1 = [0, 11, 22, 33, 44, 55, 66, 77, 88, 99, 110];
-    var limits2 = [10, 21, 32, 43, 54, 65, 76, 87, 98, 109, 120];
-    var checking = true;
-    console.log(index);    
+    if (move){
+	var limits1 = [0, 11, 22, 33, 44, 55, 66, 77, 88, 99, 110];
+	var limits2 = [10, 21, 32, 43, 54, 65, 76, 87, 98, 109, 120];
+	var player = "player1";
+	var color = 1;
+    } else {
+	var limits1 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+	var limits2 = [110, 111, 112, 113, 114, 115, 
+		       116, 117, 118, 119, 120];
+	var player = "player2";
+	var color = 2;	
+    }
+    console.log(index);
+    console.log(player);
+    console.log(paths);
     var a = neighbor(mask, index);
     var available = [];
     for (var i = 0; i < a.length; i++) {
-	if (a[i][1] != 0){ // OR ones not of your color
+	if (a[i][1] == color) {
 	    available.push(a[i]);
 	}
     }
     if (available.length == 0){
-	paths.push([index]) //no neighbors, new path
+	paths[player].push([index]) //no neighbors, new path
 	return;
     }
     var insets = {};
-    for (var i = 0; i < paths.length; i++) { // each path
-    	for (var k = 0; k < paths[i].length; k++) { //each node in path
+    for (var i = 0; i < paths[player].length; i++) { // each path
+    	for (var k = 0; k < paths[player][i].length; k++) { //each node in path
 	    for (var j = 0; j < available.length; j++) { //neighbor
-		if (available[j][0] == paths[i][k]){
+		if (available[j][0] == paths[player][i][k]){
 		    insets[i] = null; //save path indexes *uniquely*
 		}
 	    }
@@ -107,29 +114,27 @@ function winning(mask, move, index) {
     }
     insets = Object.keys(insets);
     if (insets.length == 1){
-	paths[insets[0]].push(index); // add to path
+	paths[player][insets[0]].push(index); // add to path
     } else {
-	// merge paths and push index node
+	// merge paths[player] and push index node
 	var newpath = [index];
 	for (var i = 0; i < insets.length; i++){
-	    Array.prototype.push.apply(newpath, paths[insets[i]]);
-	    delete paths[insets[i]];
+	    Array.prototype.push.apply(newpath, paths[player][insets[i]]);
+	    delete paths[player][insets[i]];
 	}
-	paths = paths.filter(function(val){return val});
-	paths.push(newpath);
+	paths[player] = paths[player].filter(function(val){return val});
+	paths[player].push(newpath);
     }
-    console.log(paths);
-    // win check on all paths
+    // win check on all paths[player]
     // FIXME check only new path
-    for (var i = 0; i < paths.length; i++) { // each path
+    for (var i = 0; i < paths[player].length; i++) { // each path
 	var l1 = false; // we need a single path to contain all
 	var l2 = false; // so reset for each path
-	console.log(paths[i]);
-    	for (var k = 0; k < paths[i].length; k++) { //each node in path
-	    if (is_winning(paths[i][k], limits1)) {
+    	for (var k = 0; k < paths[player][i].length; k++) { //each node in path
+	    if (is_winning(paths[player][i][k], limits1)) {
 		l1 = true;
 	    }
-	    if (is_winning(paths[i][k], limits2)) {
+	    if (is_winning(paths[player][i][k], limits2)) {
 		l2 = true;
 	    }
 	}
