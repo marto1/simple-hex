@@ -25,6 +25,28 @@ var contains = function(needle) {
     return indexOf.call(this, needle) > -1;
 };
 
+
+function customAlert(msg,duration)
+{
+ var styler = document.createElement("div");
+ styler.setAttribute("style","border: solid 2px Red;width:278;height:auto;top:50%;left:40%;background-color:#444;color:Silver");
+ styler.innerHTML = "<h3>"+msg+"</h3>";
+ setTimeout(function()
+ {
+   styler.parentNode.removeChild(styler);
+ },duration);
+ var child = document.getElementById('glCanvas');
+ child.parentNode.insertBefore(styler, child);
+ // document.body.appendChild(styler);
+}
+
+
+function winnigMessage(msg)
+{
+  customAlert(msg,"3000");
+}
+
+
 function set_if_true(expr, arr, key, value) {
     if (expr){
 	arr[key][1] = value;
@@ -70,7 +92,7 @@ function is_winning(index, limits) {
     }
     return 0;
 }
-// alert("Winner is player " + color + "!"); 
+
 // [2,3,4,5], [17,18,19], [13]
 var paths = {"player1":[], "player2":[]};
 
@@ -163,7 +185,7 @@ function handleMouseDown(e, offsetX, offsetY, ctx, bounding){
 	}
 	var res = winning(mask, ALTERNATE, within[0]);
 	if (res != 0){
-	    alert("Winner is player " + res + "!"); 
+	    winnigMessage("Winner is player " + res + "!");
 	    bounding[2] = [	// reset board
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
