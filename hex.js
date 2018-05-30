@@ -70,7 +70,7 @@ function is_winning(index, limits) {
     }
     return 0;
 }
-
+// alert("Winner is player " + color + "!"); 
 // [2,3,4,5], [17,18,19], [13]
 var paths = {"player1":[], "player2":[]};
 
@@ -99,7 +99,7 @@ function winning(mask, move, index) {
     }
     if (available.length == 0){
 	paths[player].push([index]) //no neighbors, new path
-	return;
+	return 0;
     }
     var insets = {};
     for (var i = 0; i < paths[player].length; i++) { // each path
@@ -138,9 +138,10 @@ function winning(mask, move, index) {
 	    }
 	}
 	if (l1 && l2) {
-	    alert("Winner is player " + color + "!");
+	    return color;
 	}
     }
+    return 0;
 }
 
 var ALTERNATE = false;
@@ -160,7 +161,28 @@ function handleMouseDown(e, offsetX, offsetY, ctx, bounding){
 	    hexagon2(ctx, within[1], "#00f");
 	    mask[within[0]] = 2;
 	}
-	winning(mask, ALTERNATE, within[0]);	
+	var res = winning(mask, ALTERNATE, within[0]);
+	if (res != 0){
+	    alert("Winner is player " + res + "!"); 
+	    bounding[2] = [	// reset board
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	    ];
+	    var newf = hexagon_field(ctx, "#000", 300, 400);
+	    bounding[0] = newf[0];
+	    bounding[1] = newf[1];
+	    paths["player1"] = [];
+	    paths["player2"] = [];
+	}
 	ALTERNATE = !ALTERNATE;
     }
     
