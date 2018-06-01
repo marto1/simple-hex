@@ -134,11 +134,13 @@ function winning(mask, move, index) {
     	}
     }
     insets = Object.keys(insets);
+    var newpath = [];
     if (insets.length == 1){
 	paths[player][insets[0]].push(index); // add to path
+	newpath = paths[player][insets[0]];
     } else {
 	// merge paths[player] and push index node
-	var newpath = [index];
+	newpath = [index];
 	for (var i = 0; i < insets.length; i++){
 	    Array.prototype.push.apply(newpath, paths[player][insets[i]]);
 	    delete paths[player][insets[i]];
@@ -146,22 +148,22 @@ function winning(mask, move, index) {
 	paths[player] = paths[player].filter(function(val){return val});
 	paths[player].push(newpath);
     }
-    // win check on all paths[player]
-    // FIXME check only new path
-    for (var i = 0; i < paths[player].length; i++) { // each path
-	var l1 = false; // we need a single path to contain all
-	var l2 = false; // so reset for each path
-    	for (var k = 0; k < paths[player][i].length; k++) { //each node in path
-	    if (is_winning(paths[player][i][k], limits1)) {
-		l1 = true;
-	    }
-	    if (is_winning(paths[player][i][k], limits2)) {
-		l2 = true;
-	    }
+    if (newpath.length < 11) {
+	return 0;		// no point in checking if path too short
+    }
+    var l1 = false;
+    var l2 = false;
+    // win check on new path[player]
+    for (var k = 0; k < newpath.length; k++) { //each node in path
+	if (is_winning(newpath[k], limits1)) {
+	    l1 = true;
 	}
-	if (l1 && l2) {
-	    return color;
+	if (is_winning(newpath[k], limits2)) {
+	    l2 = true;
 	}
+    }
+    if (l1 && l2) {
+	return color;
     }
     return 0;
 }
